@@ -17,7 +17,9 @@ COPY postinstall.sh /usr/local/bin/railway-postinstall.sh
 
 RUN chmod +x /usr/local/bin/railway-entrypoint.sh /usr/local/bin/railway-postinstall.sh \
     && printf 'ok' > /var/www/glpi/public/healthz \
-    && mkdir -p /var/glpi && chown www-data:www-data /var/glpi
+    && mkdir -p /var/glpi && chown www-data:www-data /var/glpi \
+    && a2dismod --quiet mpm_event mpm_worker 2>/dev/null || true
+RUN a2enmod --quiet mpm_prefork
 
 # Literal DB config baked as image defaults (service vars override these).
 # GLPI_DB_HOST and GLPI_DB_PASSWORD are intentionally NOT set here — they are
